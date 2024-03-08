@@ -50,13 +50,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-/***********BLE***********/
 uint8_t rxBlue='X';
-/***********BLE***********/
-
-/***********NRF***********/
-uint8_t tx_data[NRF24L01P_PAYLOAD_LENGTH] = {'X',0};
-/***********NRF***********/
+uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,7 +99,7 @@ int main(void)
   MX_TIM2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  nrf24l01p_tx_init(2500, _2Mbps);
+  nrf24l01p_rx_init(2500, _2Mbps);
 
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
@@ -185,14 +180,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if(GPIO_Pin == IRQ_NUMBER )
 	{
-		nrf24l01p_tx_irq();
+		nrf24l01p_rx_receive(rxNRF);
 	}
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance==USART1){
 		HAL_UART_Receive_IT(&huart1,&rxBlue,1); // Enabling interrupt receive again
-		tx_data[0] = rxBlue;
 	}
 }
 

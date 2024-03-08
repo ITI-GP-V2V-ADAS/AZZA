@@ -68,13 +68,6 @@ const osThreadAttr_t SPEEDt_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityRealtime,
 };
-/* Definitions for NRFt */
-osThreadId_t NRFtHandle;
-const osThreadAttr_t NRFt_attributes = {
-  .name = "NRFt",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityRealtime1,
-};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -84,7 +77,6 @@ const osThreadAttr_t NRFt_attributes = {
 void StartDefaultTask(void *argument);
 void CTRL(void *argument);
 void SPEED(void *argument);
-void NRF(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -123,9 +115,6 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of SPEEDt */
   SPEEDtHandle = osThreadNew(SPEED, NULL, &SPEEDt_attributes);
-
-  /* creation of NRFt */
-  NRFtHandle = osThreadNew(NRF, NULL, &NRFt_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -246,26 +235,6 @@ void SPEED(void *argument)
   }
 
   /* USER CODE END SPEED */
-}
-
-/* USER CODE BEGIN Header_NRF */
-/**
-* @brief Function implementing the NRFt thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_NRF */
-void NRF(void *argument)
-{
-  /* USER CODE BEGIN NRF */
-  /* Infinite loop */
-  for(;;)
-  {
-	tx_data[0] = rxBlue;
-	nrf24l01p_tx_transmit(tx_data);
-    osDelay(500);
-  }
-  /* USER CODE END NRF */
 }
 
 /* Private application code --------------------------------------------------*/

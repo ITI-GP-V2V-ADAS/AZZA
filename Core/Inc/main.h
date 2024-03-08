@@ -43,7 +43,7 @@ extern TIM_HandleTypeDef htim2;
 #define DUTY_CYCLE						0
 #define NEXT_MOVE						1
 
-extern uint8_t tx_data[NRF24L01P_PAYLOAD_LENGTH];
+extern uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH];
 extern uint8_t rxBlue;
 
 /* USER CODE END ET */
