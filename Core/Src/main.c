@@ -51,7 +51,8 @@
 
 /* USER CODE BEGIN PV */
 uint8_t rxBlue='X';
-uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] = {0};
+uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] =	{0};
+uint8_t txDisplay[DISPLAY_ELEMENTS]	=	{0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +75,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  txDisplay[TERMINATOR] = '\n';
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,6 +99,7 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
   nrf24l01p_rx_init(2500, _2Mbps);
 
@@ -181,6 +183,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin == IRQ_NUMBER )
 	{
 		nrf24l01p_rx_receive(rxNRF);
+		txDisplay[ZOZZA_NEXT_MOVE]	= rxNRF[NEXT_MOVE];
+		txDisplay[ZOZZA_SPEED] 		= rxNRF[DUTY_CYCLE];
 	}
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)

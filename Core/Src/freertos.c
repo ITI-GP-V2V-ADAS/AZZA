@@ -68,6 +68,13 @@ const osThreadAttr_t SPEEDt_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityRealtime,
 };
+/* Definitions for Dashboardt */
+osThreadId_t DashboardtHandle;
+const osThreadAttr_t Dashboardt_attributes = {
+  .name = "Dashboardt",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh1,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -77,6 +84,7 @@ const osThreadAttr_t SPEEDt_attributes = {
 void StartDefaultTask(void *argument);
 void CTRL(void *argument);
 void SPEED(void *argument);
+void Dashboard(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -115,6 +123,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of SPEEDt */
   SPEEDtHandle = osThreadNew(SPEED, NULL, &SPEEDt_attributes);
+
+  /* creation of Dashboardt */
+  DashboardtHandle = osThreadNew(Dashboard, NULL, &Dashboardt_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -224,17 +235,39 @@ void SPEED(void *argument)
     if (rxBlue=='X') {
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 0);
+      txDisplay[AZZA_SPEED] = 0;
   }else if (rxBlue=='F'||rxBlue=='G'||rxBlue=='L'||rxBlue=='R'){
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 900);
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 900);
+      txDisplay[AZZA_SPEED] = 9;
   }else if (rxBlue=='f'||rxBlue=='g'||rxBlue=='l'||rxBlue=='r'){
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 400);
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 400);
+      txDisplay[AZZA_SPEED] = 4;
   }
     osDelay(1);
   }
 
   /* USER CODE END SPEED */
+}
+
+/* USER CODE BEGIN Header_Dashboard */
+/**
+* @brief Function implementing the Dashboardt thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Dashboard */
+void Dashboard(void *argument)
+{
+  /* USER CODE BEGIN Dashboard */
+  /* Infinite loop */
+  for(;;)
+  {
+	HAL_UART_Transmit(&huart6, txDisplay, sizeof(txDisplay), HAL_MAX_DELAY);
+    osDelay(500);
+  }
+  /* USER CODE END Dashboard */
 }
 
 /* Private application code --------------------------------------------------*/

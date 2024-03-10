@@ -36,16 +36,36 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart6;
 extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim2;
 
 #define NRF24L01P_PAYLOAD_LENGTH		2     // 1 - 32bytes nfsha in nrf.h
 #define DUTY_CYCLE						0
 #define NEXT_MOVE						1
-
 extern uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH];
+
 extern uint8_t rxBlue;
 
+#define DISPLAY_ELEMENTS	8
+
+#define ZOZZA_SPEED			0
+#define ZOZZA_NEXT_MOVE		1
+#define AZZA_SPEED			2
+#define AZZA_NEXT_MOVE		3
+
+#define BLIND				4
+#define FRONT				5
+#define BACK				6
+#define TERMINATOR			7
+
+#define NOTHING				0
+#define LEFT				1
+#define RIGHT				2
+#define YELLOW				1
+#define RED					2
+extern uint8_t txDisplay[DISPLAY_ELEMENTS];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
