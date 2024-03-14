@@ -54,6 +54,7 @@ uint8_t rxBlue='X';
 uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] =	{0};
 uint8_t txDisplay[DISPLAY_ELEMENTS]		=	{0};
 uint8_t txDisplayStr[DISPLAY_STRING]	=	{0};
+uCAN_MSG rxCAN;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,6 +101,7 @@ int main(void)
   MX_TIM2_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   nrf24l01p_rx_init(2500, _2Mbps);
 
@@ -107,6 +109,13 @@ int main(void)
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   HAL_UART_Receive_IT(&huart1,&rxBlue,1); // Enabling interrupt receive
 
+  HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_RESET);
+  int ret;
+  ret = CANSPI_Initialize();
+  if(ret < 0){
+	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+	  while(1){}
+  }
   /* USER CODE END 2 */
 
   /* Init scheduler */

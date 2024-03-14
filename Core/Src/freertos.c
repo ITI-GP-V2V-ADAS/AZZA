@@ -22,6 +22,7 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -74,6 +75,13 @@ const osThreadAttr_t Dashboardt_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityHigh1,
 };
+/* Definitions for CANt */
+osThreadId_t CANtHandle;
+const osThreadAttr_t CANt_attributes = {
+  .name = "CANt",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityRealtime,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -84,6 +92,7 @@ void StartDefaultTask(void *argument);
 void CTRL(void *argument);
 void SPEED(void *argument);
 void Dashboard(void *argument);
+void CAN(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -125,6 +134,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of Dashboardt */
   DashboardtHandle = osThreadNew(Dashboard, NULL, &Dashboardt_attributes);
+
+  /* creation of CANt */
+  CANtHandle = osThreadNew(CAN, NULL, &CANt_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -268,6 +280,33 @@ void Dashboard(void *argument)
 	  osDelay(1000);
   }
   /* USER CODE END Dashboard */
+}
+
+/* USER CODE BEGIN Header_CAN */
+/**
+* @brief Function implementing the CANt thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_CAN */
+void CAN(void *argument)
+{
+  /* USER CODE BEGIN CAN */
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(CANSPI_Receive(&rxCAN)){
+		  if(rxCAN.frame.id == 0x0A){
+			  if(rxCAN.frame.data0 == 1){
+				  HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_SET);
+			  }else{
+				  HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_RESET);
+			  }
+		  }
+	}
+    osDelay(300);
+  }
+  /* USER CODE END CAN */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -32,15 +32,16 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "nrf24l01p.h"
+#include "CAN_SPI.h"
 #include <string.h>
 #include <stdio.h>
-
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
+extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim2;
 
@@ -71,6 +72,8 @@ extern uint8_t rxBlue;
 #define RED					2
 extern uint8_t txDisplay[DISPLAY_ELEMENTS];
 extern uint8_t txDisplayStr[DISPLAY_STRING];
+
+extern uCAN_MSG rxCAN;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -105,6 +108,10 @@ void Error_Handler(void);
 #define CE_GPIO_Port GPIOB
 #define SPI2_CSN_Pin GPIO_PIN_13
 #define SPI2_CSN_GPIO_Port GPIOB
+#define SPI_CS_Pin GPIO_PIN_8
+#define SPI_CS_GPIO_Port GPIOA
+#define CAN_LED_Pin GPIO_PIN_9
+#define CAN_LED_GPIO_Port GPIOA
 #define IRQ_Pin GPIO_PIN_9
 #define IRQ_GPIO_Port GPIOB
 #define IRQ_EXTI_IRQn EXTI9_5_IRQn
