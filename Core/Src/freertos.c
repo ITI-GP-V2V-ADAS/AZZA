@@ -22,7 +22,6 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -178,7 +177,7 @@ void CTRL(void *argument)
     break;
 
   case 82:	//right 'R'
-  case 114:	//right 'R'
+  //case 114:	//right 'r'
     HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
     HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 1);
     HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 1);
@@ -186,7 +185,7 @@ void CTRL(void *argument)
     break;
 
   case 76:	//left 'L'
-  case 108:	//left 'L'
+  //case 108:	//left 'l'
     HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 1);
     HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
         HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
@@ -209,8 +208,6 @@ void CTRL(void *argument)
     break;
 
   default:
-    ///*send the next movement to ossa*/
-    //display[NEXT_MOVE] = rxData;
     break;
 
   }
@@ -264,8 +261,11 @@ void Dashboard(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	HAL_UART_Transmit(&huart6, txDisplay, sizeof(txDisplay), HAL_MAX_DELAY);
-    osDelay(500);
+	  sprintf((char *)txDisplayStr, "%d,%d,%d,%d,%d,%d,%d,\\n",
+			  txDisplay[ZOZZA_SPEED], txDisplay[ZOZZA_NEXT_MOVE], txDisplay[AZZA_SPEED], txDisplay[AZZA_NEXT_MOVE],
+			  txDisplay[BLIND], txDisplay[FRONT], txDisplay[BACK]);
+	  HAL_UART_Transmit(&huart6, (uint8_t *)txDisplayStr, sizeof(txDisplayStr), HAL_MAX_DELAY);
+	  osDelay(1000);
   }
   /* USER CODE END Dashboard */
 }

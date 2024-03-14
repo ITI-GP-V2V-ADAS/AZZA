@@ -32,6 +32,9 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "nrf24l01p.h"
+#include <string.h>
+#include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -48,7 +51,8 @@ extern uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH];
 
 extern uint8_t rxBlue;
 
-#define DISPLAY_ELEMENTS	8
+#define DISPLAY_ELEMENTS	7
+#define DISPLAY_STRING		20
 
 #define ZOZZA_SPEED			0
 #define ZOZZA_NEXT_MOVE		1
@@ -66,6 +70,7 @@ extern uint8_t rxBlue;
 #define YELLOW				1
 #define RED					2
 extern uint8_t txDisplay[DISPLAY_ELEMENTS];
+extern uint8_t txDisplayStr[DISPLAY_STRING];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -52,7 +52,8 @@
 /* USER CODE BEGIN PV */
 uint8_t rxBlue='X';
 uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] =	{0};
-uint8_t txDisplay[DISPLAY_ELEMENTS]	=	{0};
+uint8_t txDisplay[DISPLAY_ELEMENTS]		=	{0};
+uint8_t txDisplayStr[DISPLAY_STRING]	=	{0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,7 +76,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  txDisplay[TERMINATOR] = '\n';
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -191,6 +191,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance==USART1){
 		HAL_UART_Receive_IT(&huart1,&rxBlue,1); // Enabling interrupt receive again
+		if(rxBlue == 'r'){
+			txDisplay[AZZA_NEXT_MOVE] = RIGHT;
+		}else if(rxBlue == 'l'){
+			txDisplay[AZZA_NEXT_MOVE] = LEFT;
+		}else{
+			txDisplay[AZZA_NEXT_MOVE] = NOTHING;
+		}
 	}
 }
 
