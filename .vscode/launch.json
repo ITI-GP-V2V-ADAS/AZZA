@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/WIN10~1/AppData/Local/Temp/Rar$DIa15280.14503",
-      "program": "c:/Users/WIN10~1/AppData/Local/Temp/Rar$DIa15280.14503/build/Debug/outDebug",
+      "cwd": ".",
+      "program": "build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

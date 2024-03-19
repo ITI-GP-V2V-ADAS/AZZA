@@ -51,10 +51,13 @@
 
 /* USER CODE BEGIN PV */
 uint8_t rxBlue='X';
-uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH] =	{0};
-uint8_t txDisplay[DISPLAY_ELEMENTS]		=	{0};
-uint8_t txDisplayStr[DISPLAY_STRING]	=	{0};
+uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH]={0};
+
+uint8_t txDisplay[DISPLAY_ELEMENTS]  = {0};
+uint8_t txDisplayStr[DISPLAY_STRING] = {0};
 uCAN_MSG rxCAN;
+uint8_t data_2[7];
+uint8_t buffer[50];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,6 +80,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	  data_2[0] = 55;
+	    data_2[1] = 0;
+	    data_2[2] = 40;
+	    data_2[3] = 0;
+	    data_2[4] = 0;
+	    data_2[5] = 0;
+	    data_2[6] = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,8 +110,8 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
-  MX_USART6_UART_Init();
   MX_SPI1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   nrf24l01p_rx_init(2500, _2Mbps);
 
@@ -111,11 +121,12 @@ int main(void)
 
   HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_RESET);
   int ret;
-  ret = CANSPI_Initialize();
-  if(ret < 0){
-	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-	  while(1){}
-  }
+  	ret = CANSPI_Initialize();
+  	if(!ret){
+
+  		HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_SET);
+  		while(1){}
+  	}
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -162,7 +173,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 84;
+  RCC_OscInitStruct.PLL.PLLN = 72;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -192,21 +203,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin == IRQ_NUMBER )
 	{
 		nrf24l01p_rx_receive(rxNRF);
-		txDisplay[ZOZZA_NEXT_MOVE]	= rxNRF[NEXT_MOVE];
-		txDisplay[ZOZZA_SPEED] 		= rxNRF[DUTY_CYCLE];
+		if     (rxNRF[NEXT_MOVE] == 'r'){  txDisplay[ZOZZA_NEXT_MOVE] = RIGHT;	}
+		else if(rxNRF[NEXT_MOVE] == 'l'){  txDisplay[ZOZZA_NEXT_MOVE] = LEFT;	}
+		else                  			{  txDisplay[ZOZZA_NEXT_MOVE] = NOTHING;}
+
+		txDisplay[ZOZZA_SPEED] = rxNRF[DUTY_CYCLE];
 	}
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance==USART1){
 		HAL_UART_Receive_IT(&huart1,&rxBlue,1); // Enabling interrupt receive again
-		if(rxBlue == 'r'){
-			txDisplay[AZZA_NEXT_MOVE] = RIGHT;
-		}else if(rxBlue == 'l'){
-			txDisplay[AZZA_NEXT_MOVE] = LEFT;
-		}else{
-			txDisplay[AZZA_NEXT_MOVE] = NOTHING;
-		}
+		if     (rxBlue == 'r'){  txDisplay[AZZA_NEXT_MOVE] = RIGHT;	 }
+		else if(rxBlue == 'l'){  txDisplay[AZZA_NEXT_MOVE] = LEFT;	 }
+		else                  {  txDisplay[AZZA_NEXT_MOVE] = NOTHING;}
 	}
 }
 

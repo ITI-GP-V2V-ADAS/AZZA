@@ -32,7 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "nrf24l01p.h"
-#include "CAN_SPI.h"
+#include"CAN_SPI.h"
 #include <string.h>
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -40,7 +40,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart6;
+extern UART_HandleTypeDef huart2;
 extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim2;
@@ -53,7 +53,7 @@ extern uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH];
 extern uint8_t rxBlue;
 
 #define DISPLAY_ELEMENTS	7
-#define DISPLAY_STRING		20
+#define DISPLAY_STRING		50
 
 #define ZOZZA_SPEED			0
 #define ZOZZA_NEXT_MOVE		1
@@ -72,7 +72,8 @@ extern uint8_t rxBlue;
 #define RED					2
 extern uint8_t txDisplay[DISPLAY_ELEMENTS];
 extern uint8_t txDisplayStr[DISPLAY_STRING];
-
+extern uint8_t data_2[7];
+extern uint8_t buffer[50];
 extern uCAN_MSG rxCAN;
 /* USER CODE END ET */
 
@@ -96,6 +97,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
+#define SPI2_CSN_Pin GPIO_PIN_14
+#define SPI2_CSN_GPIO_Port GPIOC
 #define MOTOR_4_Pin GPIO_PIN_6
 #define MOTOR_4_GPIO_Port GPIOA
 #define MOTOR_3_Pin GPIO_PIN_7
@@ -104,10 +107,10 @@ void Error_Handler(void);
 #define MOTOR_2_GPIO_Port GPIOB
 #define MOTOR_1_Pin GPIO_PIN_1
 #define MOTOR_1_GPIO_Port GPIOB
+#define CAN_LED_TOG_Pin GPIO_PIN_2
+#define CAN_LED_TOG_GPIO_Port GPIOB
 #define CE_Pin GPIO_PIN_12
 #define CE_GPIO_Port GPIOB
-#define SPI2_CSN_Pin GPIO_PIN_13
-#define SPI2_CSN_GPIO_Port GPIOB
 #define SPI_CS_Pin GPIO_PIN_8
 #define SPI_CS_GPIO_Port GPIOA
 #define CAN_LED_Pin GPIO_PIN_9

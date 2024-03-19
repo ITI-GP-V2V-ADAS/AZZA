@@ -1,6 +1,8 @@
 #include "CAN_SPI.h"
 #include "MCP2515.h"
 
+
+
 /** Local Function Prototypes */
 static uint32_t convertReg2ExtendedCANid(uint8_t tempRXBn_EIDH, uint8_t tempRXBn_EIDL, uint8_t tempRXBn_SIDH, uint8_t tempRXBn_SIDL);
 static uint32_t convertReg2StandardCANid(uint8_t tempRXBn_SIDH, uint8_t tempRXBn_SIDL) ;
@@ -26,7 +28,7 @@ void CANSPI_Sleep(void)
 }
 
 /* CAN 통신 초기화  */
-int CANSPI_Initialize(void)
+uint8_t CANSPI_Initialize(void)
 {
   RXF0 RXF0reg;
   RXF1 RXF1reg;
@@ -123,6 +125,7 @@ int CANSPI_Initialize(void)
 
   return 1;
 }
+
 
 /* CAN 메시지 전송 */
 uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
@@ -223,7 +226,6 @@ uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg)
   return (returnValue);
 }
 
-/* 수신 버퍼에 메시지가 있는지 체크 */
 uint8_t CANSPI_messagesInBuffer(void)
 {
   uint8_t messageCount = 0;

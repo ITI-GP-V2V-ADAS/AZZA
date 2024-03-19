@@ -1,6 +1,6 @@
 #include "MCP2515.h"
 #include "main.h"
-/*Modify below items for your SPI configurations */
+/* Pin 설정에 맞게 수정필요. Modify below items for your SPI configurations */
 extern SPI_HandleTypeDef        hspi1;
 #define SPI_CAN                 &hspi1
 #define SPI_TIMEOUT             10
@@ -14,7 +14,7 @@ static uint8_t SPI_Rx(void);
 static void SPI_RxBuffer(uint8_t *buffer, uint8_t length);
 
 /* MCP2515 초기화 */
-bool MCP2515_Initialize(void)
+uint8_t MCP2515_Initialize(void)
 {
   MCP2515_CS_HIGH();
 
@@ -23,16 +23,16 @@ bool MCP2515_Initialize(void)
   do {
     /* SPI Ready 확인 */
     if(HAL_SPI_GetState(SPI_CAN) == HAL_SPI_STATE_READY)
-      return true;
+      return 1;
 
     loop--;
   } while(loop > 0);
 
-  return false;
+  return -1;
 }
 
 /* MCP2515 를 설정모드로 전환 */
-bool MCP2515_SetConfigMode(void)
+uint8_t MCP2515_SetConfigMode(void)
 {
   /* CANCTRL Register Configuration 모드 설정 */
   MCP2515_WriteByte(MCP2515_CANCTRL, 0x80);
@@ -42,16 +42,16 @@ bool MCP2515_SetConfigMode(void)
   do {
     /* 모드전환 확인 */
     if((MCP2515_ReadByte(MCP2515_CANSTAT) & 0xE0) == 0x80)
-      return true;
+      return 1;
 
     loop--;
   } while(loop > 0);
 
-  return false;
+  return -1;
 }
 
 /* MCP2515 를 Normal모드로 전환 */
-bool MCP2515_SetNormalMode(void)
+uint8_t MCP2515_SetNormalMode(void)
 {
   /* CANCTRL Register Normal 모드 설정 */
   MCP2515_WriteByte(MCP2515_CANCTRL, 0x00);
@@ -61,16 +61,16 @@ bool MCP2515_SetNormalMode(void)
   do {
     /* 모드전환 확인 */
     if((MCP2515_ReadByte(MCP2515_CANSTAT) & 0xE0) == 0x00)
-      return true;
+      return 1;
 
     loop--;
   } while(loop > 0);
 
-  return false;
+  return -1;
 }
 
 /* MCP2515 를 Sleep 모드로 전환 */
-bool MCP2515_SetSleepMode(void)
+uint8_t MCP2515_SetSleepMode(void)
 {
   /* CANCTRL Register Sleep 모드 설정 */
   MCP2515_WriteByte(MCP2515_CANCTRL, 0x20);
@@ -80,12 +80,12 @@ bool MCP2515_SetSleepMode(void)
   do {
     /* 모드전환 확인 */
     if((MCP2515_ReadByte(MCP2515_CANSTAT) & 0xE0) == 0x20)
-      return true;
+      return 1;
 
     loop--;
   } while(loop > 0);
 
-  return false;
+  return -1;
 }
 
 /* MCP2515 SPI-Reset */

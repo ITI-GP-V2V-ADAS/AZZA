@@ -1,9 +1,9 @@
-#ifndef __MCP2515_H
-#define	__MCP2515_H
+#ifndef INC_MCP2515_H_
+#define INC_MCP2515_H_
 
 #pragma anon_unions
 #include "stm32f4xx_hal.h"
-#include "stdbool.h"
+
 /* MCP2515 SPI Instruction Set */
 #define MCP2515_RESET           0xC0
 
@@ -208,12 +208,11 @@ typedef struct{
   uint8_t tempEID8;
   uint8_t tempEID0;
 }id_reg_t;
-
 /* Functions */
-bool MCP2515_Initialize(void);
-bool MCP2515_SetConfigMode(void);
-bool MCP2515_SetNormalMode(void);
-bool MCP2515_SetSleepMode(void);
+uint8_t MCP2515_Initialize(void);
+uint8_t MCP2515_SetConfigMode(void);
+uint8_t MCP2515_SetNormalMode(void);
+uint8_t MCP2515_SetSleepMode(void);
 void MCP2515_Reset(void);
 uint8_t MCP2515_ReadByte (uint8_t address);
 void MCP2515_ReadRxSequence(uint8_t instruction, uint8_t *data, uint8_t length);
@@ -226,4 +225,7 @@ uint8_t MCP2515_ReadStatus(void);
 uint8_t MCP2515_GetRxStatus(void);
 void MCP2515_BitModify(uint8_t address, uint8_t mask, uint8_t data);
 
-#endif
+
+
+
+#endif /* INC_MCP2515_H_ */

@@ -181,42 +181,38 @@ void CTRL(void *argument)
   switch (rxBlue) {
 
   case 70:	//forward 'F'
-  case 102:	//forward 'f'
-    HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 1);
-    HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
-    HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 1);
-    HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 0);
-    break;
-
-  case 82:	//right 'R'
-  //case 114:	//right 'r'
     HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
     HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 1);
     HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 1);
     HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 0);
     break;
 
+  case 82:	//right 'R'
+    HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
+    HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 1);
+    HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
+    HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 1);
+    break;
+
   case 76:	//left 'L'
-  //case 108:	//left 'l'
     HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 1);
     HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 1);
+    HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 1);
+    HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 0);
     break;
 
   case 71:	//back 'G'
-  case 103:	//back 'g'
-    HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 1);
-        HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 1);
+    HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 1);
+    HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
+    HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
+    HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 1);
     break;
 
   case 88:	//stop 'X'
-        HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
-        HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 0);
+	  HAL_GPIO_WritePin(MOTOR_1_GPIO_Port, MOTOR_1_Pin, 0);
+	  HAL_GPIO_WritePin(MOTOR_2_GPIO_Port, MOTOR_2_Pin, 0);
+	  HAL_GPIO_WritePin(MOTOR_3_GPIO_Port, MOTOR_3_Pin, 0);
+	  HAL_GPIO_WritePin(MOTOR_4_GPIO_Port, MOTOR_4_Pin, 0);
     break;
 
   default:
@@ -241,18 +237,18 @@ void SPEED(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    if (rxBlue=='X') {
+    if (	rxBlue=='X' || (txDisplay[FRONT]==RED && rxBlue=='F') || (txDisplay[BACK]==RED && rxBlue=='G')	) {
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 0);
       txDisplay[AZZA_SPEED] = 0;
-  }else if (rxBlue=='F'||rxBlue=='G'||rxBlue=='L'||rxBlue=='R'){
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 900);
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 900);
-      txDisplay[AZZA_SPEED] = 9;
-  }else if (rxBlue=='f'||rxBlue=='g'||rxBlue=='l'||rxBlue=='r'){
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 400);
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 400);
+  }else if ((txDisplay[FRONT]==NOTHING && rxBlue=='F') || (txDisplay[BACK]==NOTHING && rxBlue=='G')){
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 550);
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 550);
       txDisplay[AZZA_SPEED] = 4;
+  }else if ((txDisplay[FRONT]==YELLOW && rxBlue=='F') || (txDisplay[BACK]==YELLOW && rxBlue=='G') || rxBlue=='L' || rxBlue=='R'){
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 300);
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 300);
+      txDisplay[AZZA_SPEED] = 2;
   }
     osDelay(1);
   }
@@ -273,11 +269,12 @@ void Dashboard(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  sprintf((char *)txDisplayStr, "%d,%d,%d,%d,%d,%d,%d,\\n",
-			  txDisplay[ZOZZA_SPEED], txDisplay[ZOZZA_NEXT_MOVE], txDisplay[AZZA_SPEED], txDisplay[AZZA_NEXT_MOVE],
-			  txDisplay[BLIND], txDisplay[FRONT], txDisplay[BACK]);
-	  HAL_UART_Transmit(&huart6, (uint8_t *)txDisplayStr, sizeof(txDisplayStr), HAL_MAX_DELAY);
-	  osDelay(1000);
+	    sprintf(txDisplayStr, "%d,%d,%d,%d,%d,%d,%d\n",
+	    		txDisplay[ZOZZA_SPEED],txDisplay[ZOZZA_NEXT_MOVE],txDisplay[AZZA_SPEED],txDisplay[AZZA_NEXT_MOVE],txDisplay[BLIND],txDisplay[FRONT],txDisplay[BACK]);
+
+	    	  HAL_UART_Transmit(&huart2, txDisplayStr, sizeof(txDisplayStr), HAL_MAX_DELAY);
+		  osDelay(500);
+
   }
   /* USER CODE END Dashboard */
 }
@@ -296,12 +293,24 @@ void CAN(void *argument)
   for(;;)
   {
 	  if(CANSPI_Receive(&rxCAN)){
-		  if(rxCAN.frame.id == 0x0A){
+		  if(rxCAN.frame.id == 0x0B){
 			  if(rxCAN.frame.data0 == 1){
-				  HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_SET);
+				  HAL_GPIO_WritePin(CAN_LED_TOG_GPIO_Port, CAN_LED_TOG_Pin, GPIO_PIN_SET);
 			  }else{
-				  HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_RESET);
+				  HAL_GPIO_WritePin(CAN_LED_TOG_GPIO_Port, CAN_LED_TOG_Pin, GPIO_PIN_RESET);
 			  }
+			  if (rxCAN.frame.data2)	{	txDisplay[FRONT]=RED;	 }
+			  if ( rxCAN.frame.data1)	{	txDisplay[FRONT]=YELLOW; }
+			  if ((!rxCAN.frame.data1) && (!rxCAN.frame.data2))
+			  	  { txDisplay[FRONT] = NOTHING;}
+
+			  if ( rxCAN.frame.data3)	{	txDisplay[BLIND]=RED;	 }
+			  if (!rxCAN.frame.data3)	{ txDisplay[BLIND]=NOTHING;}
+
+			  if ( rxCAN.frame.data5 )	{	txDisplay[BACK]=RED;	 }
+			  if ( rxCAN.frame.data4)	{	txDisplay[BACK]=YELLOW;  }
+			  if ((!rxCAN.frame.data4) && (!rxCAN.frame.data5))
+			  	  { txDisplay[BACK] = NOTHING;}
 		  }
 	}
     osDelay(300);

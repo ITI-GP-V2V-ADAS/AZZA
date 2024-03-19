@@ -2,6 +2,7 @@
 #define INC_CAN_SPI_H_
 
 #include "stm32f4xx_hal.h"
+
 typedef union {
   struct {
     uint8_t idType;
@@ -22,7 +23,7 @@ typedef union {
 #define dSTANDARD_CAN_MSG_ID_2_0B 1
 #define dEXTENDED_CAN_MSG_ID_2_0B 2
 
-int CANSPI_Initialize(void);
+uint8_t CANSPI_Initialize(void);
 void CANSPI_Sleep(void);
 uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg);
 uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg);
@@ -30,5 +31,8 @@ uint8_t CANSPI_messagesInBuffer(void);
 uint8_t CANSPI_isBussOff(void);
 uint8_t CANSPI_isRxErrorPassive(void);
 uint8_t CANSPI_isTxErrorPassive(void);
+
+
+
 
 #endif /* INC_CAN_SPI_H_ */
