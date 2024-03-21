@@ -242,13 +242,14 @@ void SPEED(void *argument)
       __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 0);
       txDisplay[AZZA_SPEED] = 0;
   }else if ((txDisplay[FRONT]==NOTHING && rxBlue=='F') || (txDisplay[BACK]==NOTHING && rxBlue=='G')){
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 550);
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 550);
-      txDisplay[AZZA_SPEED] = 4;
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 400);
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 400);
+      txDisplay[AZZA_SPEED] = 5;
   }else if ((txDisplay[FRONT]==YELLOW && rxBlue=='F') || (txDisplay[BACK]==YELLOW && rxBlue=='G') || rxBlue=='L' || rxBlue=='R'){
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 300);
-      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 300);
-      txDisplay[AZZA_SPEED] = 2;
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 200);
+      __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200);
+      txDisplay[AZZA_SPEED] = 4;
+
   }
     osDelay(1);
   }
@@ -269,11 +270,11 @@ void Dashboard(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	    sprintf(txDisplayStr, "%d,%d,%d,%d,%d,%d,%d\n",
+	    sprintf((char*)txDisplayStr, "%d,%d,%d,%d,%d,%d,%d\n",
 	    		txDisplay[ZOZZA_SPEED],txDisplay[ZOZZA_NEXT_MOVE],txDisplay[AZZA_SPEED],txDisplay[AZZA_NEXT_MOVE],txDisplay[BLIND],txDisplay[FRONT],txDisplay[BACK]);
 
-	    	  HAL_UART_Transmit(&huart2, txDisplayStr, sizeof(txDisplayStr), HAL_MAX_DELAY);
-		  osDelay(500);
+	    HAL_UART_Transmit(&huart2, txDisplayStr, sizeof(txDisplayStr), HAL_MAX_DELAY);
+	    osDelay(500);
 
   }
   /* USER CODE END Dashboard */

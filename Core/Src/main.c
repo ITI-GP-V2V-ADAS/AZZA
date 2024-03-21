@@ -58,6 +58,9 @@ uint8_t txDisplayStr[DISPLAY_STRING] = {0};
 uCAN_MSG rxCAN;
 uint8_t data_2[7];
 uint8_t buffer[50];
+
+uint8_t uart_test[5]={0};
+uint8_t uart_test_STR[20]={0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,6 +90,15 @@ int main(void)
 	    data_2[4] = 0;
 	    data_2[5] = 0;
 	    data_2[6] = 0;
+	    uart_test[0]=5;
+	    uart_test[1]=5;
+	    uart_test[2]=5;
+	    uart_test[3]=5;
+	    uart_test[4]=5;
+
+
+
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/

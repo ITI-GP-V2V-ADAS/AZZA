@@ -53,7 +53,7 @@ extern uint8_t rxNRF[NRF24L01P_PAYLOAD_LENGTH];
 extern uint8_t rxBlue;
 
 #define DISPLAY_ELEMENTS	7
-#define DISPLAY_STRING		50
+#define DISPLAY_STRING		20
 
 #define ZOZZA_SPEED			0
 #define ZOZZA_NEXT_MOVE		1
@@ -75,6 +75,9 @@ extern uint8_t txDisplayStr[DISPLAY_STRING];
 extern uint8_t data_2[7];
 extern uint8_t buffer[50];
 extern uCAN_MSG rxCAN;
+extern uint8_t uart_test[5];
+extern uint8_t uart_test_STR[20];
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
